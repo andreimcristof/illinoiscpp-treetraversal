@@ -353,7 +353,7 @@ std::vector<T> traverseLevels(GenericTree<T>& tree) {
 //   }
 
   results.push_back(rootNodePtr->data);
-  std::stack<TreeNode*> nodesRemaining;
+  std::queue<TreeNode*> nodesRemaining;
 
   TreeNode* curNode = rootNodePtr;
   while(curNode != nullptr) {
@@ -370,11 +370,13 @@ std::vector<T> traverseLevels(GenericTree<T>& tree) {
       }
     }
 
-    // std::cout << "nodesRemaining: " << nodesRemaining.size() << std::endl;
+    std::cout << "nodesRemaining: " << nodesRemaining.size() << std::endl;
+
 
     if(nodesRemaining.size() > 0) {
-      curNode = nodesRemaining.top();
-      nodesRemaining.pop();    
+      std::cout << "first out from queue is: " << nodesRemaining.back();
+      curNode = nodesRemaining.front();
+      nodesRemaining.pop();  
     } else curNode = nullptr;
   }
 
