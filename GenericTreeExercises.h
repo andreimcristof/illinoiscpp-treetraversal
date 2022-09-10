@@ -96,8 +96,29 @@ static void treeFactory(GenericTree<int>& tree) {
   // Build the contents of tree so that it matches the diagram above
   // when you print it out. The main() function runs that test for you.
 
-  // ...
 
+  // 4
+  // |
+  // |_ 8
+  // |  |
+  // |  |_ 16
+  // |  |  |
+  // |  |  |_ 42
+  // |  |
+  // |  |_ 23
+  // |
+  // |_ 15
+
+  // ...
+  
+  
+  tree.clear();
+  auto root = tree.createRoot(4);
+  auto nodeEight = root->addChild(8);
+  auto nodeSixteen = nodeEight->addChild(16);
+  auto nodeTwentyThree = nodeEight->addChild(23);
+  nodeSixteen->addChild(42);
+  auto nodeFifteen = root->addChild(15);
 }
 
 // treeFactoryTest: This function demonstrates the execution of treeFactory
@@ -137,7 +158,7 @@ static void treeFactoryTest() {
 // assignment.
 
 // The level-order traversal strategy is related to breadth-first search,
-// in that it attempts to finish work on an entire layer of the tree before
+// in that it attempts to finish work on na entire layer of the tree before
 // working on the next layer. In contrast with the other methods, it is
 // somewhat more natural to implement with a queue. However, it's possible
 // to use a combination of data structures, iteration, and recursion to
@@ -311,7 +332,7 @@ std::vector<T> traverseLevels(GenericTree<T>& tree) {
   // This is the results vector you need to fill.
   std::vector<T> results;
 
-  auto rootNodePtr = tree.getRootPtr();
+  TreeNode* rootNodePtr = tree.getRootPtr();
   if (!rootNodePtr) return results;
 
   //      *****************************************************
@@ -324,10 +345,48 @@ std::vector<T> traverseLevels(GenericTree<T>& tree) {
   // Remember that you can add a copy of an item to the back of a std::vector
   // with the .push_back() member function.
 
-  // ...
+// for (auto childPtr : subtreeRoot->childrenPtrs) {
+
+//     // Increment the sum by the result of recursing on this child's subtree.
+//     nullChildrenSum += countNullChildrenRecursive(childPtr);
+
+//   }
+
+  results.push_back(rootNodePtr->data);
+  std::stack<TreeNode*> nodesRemaining;
+
+  TreeNode* curNode = rootNodePtr;
+  while(curNode != nullptr) {
+
+    // iterate one level
+    for(TreeNode* node : curNode->childrenPtrs) {
+      if(node != nullptr) {
+        results.push_back(node->data);
+
+        // child of current level has nodes, remember them for later      
+        if(node->childrenPtrs.size() > 0) {
+          nodesRemaining.push(node);
+        }
+      }
+    }
+
+    // std::cout << "nodesRemaining: " << nodesRemaining.size() << std::endl;
+
+    if(nodesRemaining.size() > 0) {
+      curNode = nodesRemaining.top();
+      nodesRemaining.pop();    
+    } else curNode = nullptr;
+  }
 
   return results;
 }
+
+// template <typename N>
+// void traverseNode(N* node, std::stack<N*>& remaining) {
+  
+
+// }
+
 
 // traversalTest: Runs some tests with your traverseLevels function and
 // displays comparison output. (You do NOT need to edit this function.)
